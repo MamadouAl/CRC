@@ -18,7 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-public class Main {
+public class Routage {
 
     private static Map<String, Map<String, Integer>> graph = new HashMap<>();
     private static JTextArea textArea;
@@ -212,17 +212,59 @@ public class Main {
             afficherMessage("Aucun commutateur pour afficher les tables de routage.");
         }
     }
+    
+    static class VoisinAvecPoids implements Comparable<VoisinAvecPoids> {
+        String nomVoisin;
+        int poidsTotal;
+
+        public VoisinAvecPoids(String nomVoisin, int poidsTotal) {
+            this.nomVoisin = nomVoisin;
+            this.poidsTotal = poidsTotal;
+        }
+
+        @Override
+        public int compareTo(VoisinAvecPoids autre) {
+            return Integer.compare(this.poidsTotal, autre.poidsTotal);
+        }
+    }
 
     private static void afficherTablesDeRoutagesDansTextArea() {
         textArea.setText("");
-        for (Map.Entry<String, Map<String, Integer>> entry : graph.entrySet()) {
-            textArea.append("Site " + entry.getKey() + " :\n");
-            for (Map.Entry<String, Integer> neighbor : entry.getValue().entrySet()) {
-                textArea.append("    " + neighbor.getKey() + " : " + neighbor.getValue() + "\n");
+        for (String commutateurCourant : graph.keySet()) {
+            textArea.append("Table de routage pour le commutateur " + commutateurCourant + " :\n");
+
+            Map<String, Integer> voisins = graph.get(commutateurCourant);
+
+            Map<String, List<VoisinAvecPoids>> routes = new HashMap<>();
+            for (String destination : graph.keySet()) {
+                if (!destination.equals(commutateurCourant)) {
+                    List<VoisinAvecPoids> voisinsTries = new ArrayList<>();
+                    for (Map.Entry<String, Integer> voisin : voisins.entrySet()) {
+                        int poidsTotal = voisin.getValue(); // Poids de la liaison directe
+                        poidsTotal += trouverCheminPlusCourt(graph, voisin.getKey(), destination).size(); // Poids du reste du chemin
+                        voisinsTries.add(new VoisinAvecPoids(voisin.getKey(), poidsTotal));
+                    }
+                    Collections.sort(voisinsTries);
+                    routes.put(destination, voisinsTries);
+                }
+            }
+
+            for (Map.Entry<String, List<VoisinAvecPoids>> entry : routes.entrySet()) {
+                String destination = entry.getKey();
+                List<VoisinAvecPoids> voisinsPourDestination = entry.getValue();
+                StringBuilder voisinsString = new StringBuilder();
+                for (VoisinAvecPoids voisin : voisinsPourDestination) {
+                    voisinsString.append(voisin.nomVoisin).append(", ");
+                }
+                if (voisinsString.length() > 0) {
+                    voisinsString.setLength(voisinsString.length() - 2);
+                }
+                textArea.append("    Destination: " + destination + " -> " + voisinsString + "\n");
             }
             textArea.append("\n");
         }
     }
+
 
     private static void afficherMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
@@ -233,6 +275,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Commutateurs::new);
+        SwingUtilities.invokeLater(Fenetre::new);
     }
 }

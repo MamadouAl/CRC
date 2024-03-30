@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
-public class Commutateurs extends JFrame {
+public class Fenetre extends JFrame {
 
     private JButton createButton;
     private JButton deleteButton;
@@ -16,7 +16,7 @@ public class Commutateurs extends JFrame {
     private JTextField costField;
     private JTextArea graphArea;
 
-    public Commutateurs() {
+    public Fenetre() {
         super("Gestion des commutateurs et liaisons");
         initComponents();
         setSize(400, 300);
@@ -39,7 +39,7 @@ public class Commutateurs extends JFrame {
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.creerCommutateur();
+                Routage.creerCommutateur();
                 updateGraphArea();
             }
         });
@@ -49,7 +49,7 @@ public class Commutateurs extends JFrame {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.supprimerCommutateur();
+                Routage.supprimerCommutateur();
                 updateGraphArea();
             }
         });
@@ -59,7 +59,7 @@ public class Commutateurs extends JFrame {
         addLinkButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.ajouterLiaison();
+                Routage.ajouterLiaison();
                 updateGraphArea();
             }
         });
@@ -69,7 +69,7 @@ public class Commutateurs extends JFrame {
         removeLinkButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.supprimerLiaison();
+                Routage.supprimerLiaison();
                 updateGraphArea();
             }
         });
@@ -79,7 +79,7 @@ public class Commutateurs extends JFrame {
         findShortestPathButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.trouverCheminLePlusCourt();
+                Routage.trouverCheminLePlusCourt();
             }
         });
         buttonPanel.add(findShortestPathButton);
@@ -88,7 +88,7 @@ public class Commutateurs extends JFrame {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.afficherTablesDeRoutages();
+                Routage.afficherTablesDeRoutages();
             }
         });
         buttonPanel.add(nextButton);
@@ -113,7 +113,7 @@ public class Commutateurs extends JFrame {
     private void updateGraphArea() {
         StringBuilder graphText = new StringBuilder();
         graphText.append("Graphe :\n");
-        for (Map.Entry<String, Map<String, Integer>> entry : Main.getGraph().entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> entry : Routage.getGraph().entrySet()) {
             graphText.append(entry.getKey()).append(" : ");
             for (Map.Entry<String, Integer> neighbor : entry.getValue().entrySet()) {
                 graphText.append(neighbor.getKey()).append("(").append(neighbor.getValue()).append(") ");
@@ -124,6 +124,6 @@ public class Commutateurs extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Commutateurs::new);
+        SwingUtilities.invokeLater(Fenetre::new);
     }
 }
