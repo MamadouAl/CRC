@@ -1,129 +1,155 @@
 package edu.diallo;
-import javax.swing.*;
-import java.awt.*;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 public class Fenetre extends JFrame {
 
-    private JButton createButton;
-    private JButton deleteButton;
-    private JButton addLinkButton;
-    private JButton removeLinkButton;
-    private JButton findShortestPathButton;
-    private JButton nextButton;
-    private JTextField costField;
-    private JTextArea graphArea;
+	private JButton creerButton;
+	private JButton deleteButton;
+	private JButton ajoutLiaisonButton;
+	private JButton removeLiaisonButton;
+	private JButton cheminButton;
+	private JButton tableRoutageButton;
+	private JTextField cout;
+	private JTextArea graphe;
 
-    public Fenetre() {
-        super("Gestion des commutateurs et liaisons");
-        initComponents();
-        setSize(400, 300);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);
-    }
+	public Fenetre() {
+		super("TP - Routage  - Diallo Mamadou Aliou");
+		initComponents();
+		setSize(600, 400);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
+	}
 
-    public void initComponents() {
-        setLayout(new BorderLayout());
+	/**
+	 * Initialisation des composants de la fenêtre
+	 */
+	public void initComponents() {
+		setLayout(new BorderLayout());
 
-        // Header
-        JLabel headerLabel = new JLabel("Gestion des commutateurs et liaisons");
-        headerLabel.setHorizontalAlignment(JLabel.CENTER);
-        add(headerLabel, BorderLayout.NORTH);
+		JPanel ajout = new JPanel();
+		JPanel suppr = new JPanel();
+		JPanel affichage = new JPanel();
 
-        // Buttons
-        JPanel buttonPanel = new JPanel();
-        createButton = new JButton("Créer commutateur");
-        createButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Routage.creerCommutateur();
-                updateGraphArea();
-            }
-        });
-        buttonPanel.add(createButton);
+		JLabel enTete = new JLabel("Gestion des commutateurs et des liaisons");
+		enTete.setHorizontalAlignment(JLabel.CENTER);
+		add(enTete, BorderLayout.NORTH);
 
-        deleteButton = new JButton("Supprimer commutateur");
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Routage.supprimerCommutateur();
-                updateGraphArea();
-            }
-        });
-        buttonPanel.add(deleteButton);
+		// Buttons
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new GridLayout(0, 3)); // 0 lignes (pour s'adapter à la hauteur), 3 colonnes
 
-        addLinkButton = new JButton("Ajouter liaison");
-        addLinkButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Routage.ajouterLiaison();
-                updateGraphArea();
-            }
-        });
-        buttonPanel.add(addLinkButton);
+		creerButton = new JButton("Créer un site");
+		creerButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Routage.creerCommutateur();
+				updateGraphArea();
+			}
+		});
+		buttonPanel.add(creerButton);
+		buttonPanel.add(Box.createHorizontalStrut(10));
 
-        removeLinkButton = new JButton("Supprimer liaison");
-        removeLinkButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Routage.supprimerLiaison();
-                updateGraphArea();
-            }
-        });
-        buttonPanel.add(removeLinkButton);
+		ajoutLiaisonButton = new JButton("Ajouter une liaison");
+		ajoutLiaisonButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Routage.ajouterLiaison();
+				updateGraphArea();
+			}
+		});
+		buttonPanel.add(ajoutLiaisonButton);
+		ajout.add(buttonPanel);
 
-        findShortestPathButton = new JButton("Trouver chemin le plus court");
-        findShortestPathButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Routage.trouverCheminLePlusCourt();
-            }
-        });
-        buttonPanel.add(findShortestPathButton);
+		deleteButton = new JButton("Supprimer un site");
+		deleteButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Routage.supprimerCommutateur();
+				updateGraphArea();
+			}
+		});
+		buttonPanel.add(deleteButton);
+		buttonPanel.add(Box.createHorizontalStrut(10));
 
-        nextButton = new JButton("Afficher tables de routage");
-        nextButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Routage.afficherTablesDeRoutages();
-            }
-        });
-        buttonPanel.add(nextButton);
+		removeLiaisonButton = new JButton("Supprimer liaison");
+		removeLiaisonButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Routage.supprimerLiaison();
+				updateGraphArea();
+			}
+		});
+		buttonPanel.add(removeLiaisonButton);
+		suppr.add(buttonPanel);
 
-        add(buttonPanel, BorderLayout.CENTER);
+		cheminButton = new JButton("Trouver chemin le plus court");
+		cheminButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Routage.trouverCheminLePlusCourt();
+			}
+		});
+		buttonPanel.add(cheminButton);
+		buttonPanel.add(Box.createHorizontalStrut(10));
 
-        // Cost field
-        JPanel costPanel = new JPanel();
-        costPanel.add(new JLabel("Coût de la liaison :"));
-        costField = new JTextField(5);
-        costPanel.add(costField);
-        add(costPanel, BorderLayout.SOUTH);
+		tableRoutageButton = new JButton("Afficher tables de routage");
+		tableRoutageButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Routage.afficherTablesDeRoutages();
+			}
+		});
+		buttonPanel.add(tableRoutageButton);
+		affichage.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Graph area
-        graphArea = new JTextArea(); 
-        graphArea.setRows(5); //augmente la hauteur de la zone de texte
-        graphArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(graphArea);
-        add(scrollPane, BorderLayout.SOUTH);
-    }
+		add(ajout, BorderLayout.WEST);
+		add(suppr, BorderLayout.CENTER);
+		add(affichage, BorderLayout.CENTER);
 
-    private void updateGraphArea() {
-        StringBuilder graphText = new StringBuilder();
-        graphText.append("Graphe :\n");
-        for (Map.Entry<String, Map<String, Integer>> entry : Routage.getGraph().entrySet()) {
-            graphText.append(entry.getKey()).append(" : ");
-            for (Map.Entry<String, Integer> neighbor : entry.getValue().entrySet()) {
-                graphText.append(neighbor.getKey()).append("(").append(neighbor.getValue()).append(") ");
-            }
-            graphText.append("\n");
-        }
-        graphArea.setText(graphText.toString());
-    }
+		// Affiche Cout de la liaison
+		JPanel costPanel = new JPanel();
+		costPanel.add(new JLabel("Coût de la liaison :"));
+		cout = new JTextField(5);
+		costPanel.add(cout);
+		add(costPanel, BorderLayout.SOUTH);
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(Fenetre::new);
-    }
+		// Affichage du graphe
+		graphe = new JTextArea();
+		graphe.setRows(10); // augmente la hauteur de la zone de texte
+		graphe.setEditable(false);
+		JScrollPane scrollPane = new JScrollPane(graphe);
+		add(scrollPane, BorderLayout.SOUTH);
+	}
+
+	/**
+	 * Met à jour la zone de texte affichant le graphe
+	 */
+	private void updateGraphArea() {
+		StringBuilder graphText = new StringBuilder();
+		graphText.append("Votre Graphe :\n");
+		for (Map.Entry<String, Map<String, Integer>> entry : Routage.getGraph().entrySet()) {
+			graphText.append(entry.getKey()).append(" : ");
+			for (Map.Entry<String, Integer> neighbor : entry.getValue().entrySet()) {
+				graphText.append(neighbor.getKey()).append("(").append(neighbor.getValue()).append(") ");
+			}
+			graphText.append("\n");
+		}
+		graphe.setText(graphText.toString());
+	}
 }
