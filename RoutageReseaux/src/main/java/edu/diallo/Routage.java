@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 public class Routage {
 	private static Map<String, Map<String, Integer>> graphe = new HashMap<>();
@@ -88,7 +87,7 @@ public class Routage {
 		afficherMessage("Liaison ajoutée entre " + commutateurSource + " et " + commutateurDestination
 				+ " avec un coût de " + cost);
 	}
-	
+
 	/**
 	 * Permet de supprimer un commutateur
 	 */
@@ -108,7 +107,7 @@ public class Routage {
 			afficherMessage("Aucun commutateur à supprimer.");
 		}
 	}
-	
+
 	/**
 	 * Permet de supprimer une liaison entre deux commutateurs
 	 */
@@ -138,6 +137,9 @@ public class Routage {
 		afficherMessage("Liaison supprimée entre " + commutateurSource + " et " + commutateurDestination);
 	}
 
+	/**
+	 * Trouve le chemin le plus court entre deux commutateurs
+	 */
 	public static void trouverCheminLePlusCourt() {
 		if (graphe.size() < 2) {
 			afficherMessage("Au moins deux commutateurs doivent être créés pour trouver un chemin.");
@@ -167,7 +169,7 @@ public class Routage {
 			afficherMessage(message.toString());
 		}
 	}
-	
+
 	/**
 	 * Trouve le chemin le plus court entre deux commutateurs
 	 */
@@ -200,7 +202,7 @@ public class Routage {
 		}
 		return new ArrayList<>();
 	}
-	
+
 	/**
 	 * Construit le chemin à partir de la table parentMap
 	 */
@@ -337,7 +339,7 @@ public class Routage {
 	private static void afficherMessage(String message) {
 		JOptionPane.showMessageDialog(null, message);
 	}
-	
+
 	/**
 	 * Retourne le graphe
 	 */
